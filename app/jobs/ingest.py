@@ -4,9 +4,10 @@
 GitHub の「Releases → media → Edit → ファイルを添付」で上げるだけで、
 このジョブが種類を判別し、動画なら要件を検査してから投稿キューに積む。
 
-  IMG_1234.MOV  →（検査OK）→ videos/<id>.mov + queue/ready/<id>.json
-  IMG_1234.MOV  →（検査NG）→ videos/rejected/IMG_1234.MOV（理由をログに残す）
-  photo.jpg     →           images/pending/<時刻>-photo.jpg
+  IMG_1234.MOV   →（検査OK）→ videos/<id>.mov + queue/ready/<id>.json（実写）
+  ai_walk.mp4    →（検査OK）→ 同上。ただし AI 生成として記録する
+  IMG_1234.MOV   →（検査NG）→ videos/rejected/IMG_1234.MOV（理由をログに残す）
+  photo.jpg      →           images/pending/<時刻>-photo.jpg
 """
 from __future__ import annotations
 
@@ -21,6 +22,21 @@ log = logging.getLogger(__name__)
 
 REJECTED = "videos/rejected/"
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+
+# ファイル名でAI生成かどうかを見分ける。PixVerse アプリで作った動画を手で
+# アップロードする運用があるため、実写と混ざると成績比較が意味を失う。
+#   ai_散歩.mp4 / AI-sunset.mov / pixverse_0921.mp4  → AI 生成
+#   IMG_1234.MOV                                      → 実写
+AI_PREFIXES = ("ai_", "ai-")
+AI_KEYWORDS = ("pixverse",)
+
+
+def origin_of(filename: str) -> str:
+    """添付ファイル名から動画の出どころを判定する。"""
+    name = filename.lower()
+    if name.startswith(AI_PREFIXES) or any(k in name for k in AI_KEYWORDS):
+        return queue.ORIGIN_AI
+    return queue.ORIGIN_LIVE
 
 
 def _probe_asset(asset: dict) -> video.VideoInfo:
@@ -53,17 +69,18 @@ def _ingest_video(asset: dict, pool: dict) -> str | None:
     path = f"{queue.VIDEOS}{item_id}{ext}"
     store.rename_asset(asset["id"], path)
 
+    origin = origin_of(name)
     entry = prompts.pick(pool) or {}
     queue.enqueue_ready({
         "id": item_id,
-        "origin": queue.ORIGIN_LIVE,
+        "origin": origin,
         "source": name,
         "video_path": path,
         "caption": entry.get("caption", config.DEFAULT_CAPTION),
         "hashtags": entry.get("hashtags", []),
         "prompt_id": entry.get("id", ""),
         "theme": entry.get("theme", ""),
-        "motion": "live",
+        "motion": "live" if origin == queue.ORIGIN_LIVE else entry.get("motion", ""),
         "video_info": {
             "duration_sec": round(info.duration_sec, 1),
             "width": info.width,
@@ -74,7 +91,9 @@ def _ingest_video(asset: dict, pool: dict) -> str | None:
     })
     if entry:
         prompts.mark_used(pool, entry["id"])
-    log.info("取り込みました %s ← %s（%s）", item_id, name, info.summary())
+    label = "実写" if origin == queue.ORIGIN_LIVE else "AI 生成"
+    log.info("取り込みました %s ← %s（%s・%s）",
+             item_id, name, label, info.summary())
     return item_id
 
 

@@ -161,6 +161,31 @@ check("扱えない形式は手つかずで残る",
 check("2 回目は何もしない（取り込み済みを再処理しない）",
       ingest.run() == 0 and queue.ready_count() == 1)
 
+# ファイル名で出どころを見分ける（PixVerse アプリで作った動画を手で上げる運用）
+print()
+print("2b. ファイル名による実写 / AI の判別")
+for fname, expected in [
+    ("IMG_1234.MOV", queue.ORIGIN_LIVE),
+    ("ai_walk.mp4", queue.ORIGIN_AI),
+    ("AI-sunset.mov", queue.ORIGIN_AI),
+    ("PixVerse_export.mp4", queue.ORIGIN_AI),
+    ("airport.mp4", queue.ORIGIN_LIVE),        # 誤検出しないこと
+    ("my_ai_dog.mp4", queue.ORIGIN_LIVE),      # 同上
+]:
+    got = ingest.origin_of(fname)
+    check(f"{fname} → {expected}", got == expected)
+
+put_asset("ai_autumn.mp4", fake_mp4(1080, 1920, 7.0))
+ingest.run()
+ai_items = [store.read_json(n) for n in store.list_names(queue.READY)
+            if store.read_json(n)["origin"] == queue.ORIGIN_AI]
+check("AI 名の動画が AI として積まれる", len(ai_items) == 1)
+check("内訳に反映される", queue.ready_counts()[queue.ORIGIN_AI] == 1)
+# 以降のテストのために取り除く
+for n in store.list_names(queue.READY):
+    if store.read_json(n)["origin"] == queue.ORIGIN_AI:
+        store.delete(n)
+
 # --- 3. 投稿 ------------------------------------------------------------
 print()
 print("3. Instagram への投稿")
