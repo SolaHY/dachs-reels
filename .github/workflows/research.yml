@@ -1,0 +1,16 @@
+# 週次の市場調査と企画の補充。
+name: research
+
+on:
+  repository_dispatch:
+    types: [research]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 17 * * 0'    # 月曜 02:00 JST
+
+jobs:
+  research:
+    uses: ./.github/workflows/_run.yml
+    with:
+      command: research
+    secrets: inherit

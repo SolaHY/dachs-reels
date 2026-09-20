@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111317">
+<title>Dachs Reels</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🐾</text></svg>">
+<style>
+:root{
+  --bg:#f6f6f7; --card:#fff; --fg:#17181c; --muted:#6b6f76;
+  --line:#e2e4e8; --accent:#2f6df6; --accent-fg:#fff; --danger:#c0362c; --good:#1f8a4c;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#111317; --card:#1a1d23; --fg:#e8eaed; --muted:#9aa0a8;
+         --line:#2a2e36; --accent:#5b8dff; --danger:#ef6c60; --good:#4cc47f; }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:0 16px calc(96px + env(safe-area-inset-bottom));background:var(--bg);color:var(--fg);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif}
+header{position:sticky;top:0;background:var(--bg);padding:16px 0 12px;border-bottom:1px solid var(--line);z-index:10}
+h1{font-size:18px;margin:0}
+h2{font-size:15px;margin:26px 0 10px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.row{display:flex;gap:10px;align-items:center}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted);font-size:13px}
+.stat{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);
+  border-radius:12px;padding:12px 16px;min-height:48px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:6px}
+button.primary,.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:transparent}
+button.danger{color:var(--danger)}
+button:disabled{opacity:.5}
+button:active{opacity:.7}
+input,textarea{width:100%;font:inherit;color:var(--fg);background:var(--bg);
+  border:1px solid var(--line);border-radius:10px;padding:10px}
+textarea{min-height:84px;resize:vertical}
+details summary{cursor:pointer;padding:6px 0}
+.note{border-radius:10px;padding:10px 14px;margin:12px 0;font-size:14px;color:#fff}
+.note.ok{background:var(--good)} .note.ng{background:var(--danger)}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.actions{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:var(--card);border-top:1px solid var(--line);display:flex;gap:10px}
+.actions button{flex:1;padding:12px 8px;font-size:14px}
+.hide{display:none}
+code{background:var(--bg);padding:2px 6px;border-radius:6px;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <h1 class="grow">🐾 Dachs Reels</h1>
+    <button id="reload" style="min-height:36px;padding:6px 12px">更新</button>
+  </div>
+  <div class="stat" id="counts" style="margin-top:10px"></div>
+</header>
+
+<div id="msg"></div>
+
+<!-- 設定 -->
+<section id="setup" class="hide">
+  <h2>接続設定</h2>
+  <div class="card">
+    <p class="muted" style="margin-top:0">
+      リポジトリと、<code>Contents: RW</code> / <code>Actions: RW</code> 権限の
+      ファイングレード PAT を入れてください。端末内にのみ保存されます。</p>
+    <input id="repo" placeholder="owner/repo" autocapitalize="off" autocorrect="off">
+    <input id="pat" type="password" placeholder="github_pat_..." style="margin-top:8px">
+    <p><button class="primary" style="width:100%" id="save">保存して接続</button></p>
+    <p class="muted" style="margin-bottom:0">
+      <a id="patlink" href="https://github.com/settings/personal-access-tokens/new"
+         target="_blank" rel="noopener">PAT を作る</a>
+    </p>
+  </div>
+</section>
+
+<main id="main" class="hide">
+
+  <h2>1. 動画・写真を追加</h2>
+  <div class="card">
+    <p class="muted" style="margin-top:0">
+      リリースの編集画面でファイルを添付すると、自動で取り込まれます。
+      1 ファイル 2GB まで。縦向き・3 秒以上の動画が対象です。</p>
+    <a class="btn primary" id="uploadLink" style="width:100%" target="_blank" rel="noopener">
+      リリースを開いて添付する</a>
+    <p><button style="width:100%" data-dispatch="ingest">いま取り込む</button></p>
+    <div id="pendingAssets" class="muted"></div>
+  </div>
+
+  <h2>2. 投稿待ち</h2>
+  <div id="queue"></div>
+
+  <h2>3. 成績と企画</h2>
+  <div class="card" id="report"></div>
+
+  <h2>4. 直近の投稿</h2>
+  <div id="posted"></div>
+
+  <h2>5. 実行履歴</h2>
+  <div class="card" id="runs"></div>
+</main>
+
+<div class="actions" id="bar" class="hide">
+  <button data-dispatch="publish">今すぐ投稿</button>
+  <button data-dispatch="research">市場調査</button>
+  <button data-dispatch="generate">AI生成</button>
+</div>
+
+<script>
+const API = 'https://api.github.com';
+const S = { repo: localStorage.getItem('repo') || '', pat: localStorage.getItem('pat') || '' };
+const $ = (id) => document.getElementById(id);
+
+const b64d = (b64) => new TextDecoder().decode(
+  Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0)));
+const b64e = (s) => {
+  const bytes = new TextEncoder().encode(s);
+  let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+};
+
+function note(text, ok = true) {
+  $('msg').innerHTML = `<p class="note ${ok ? 'ok' : 'ng'}">${text}</p>`;
+  if (ok) setTimeout(() => { $('msg').innerHTML = ''; }, 6000);
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path.startsWith('http') ? path : `${API}${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `Bearer ${S.pat}`,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(opts.headers || {}),
+    },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`${res.status} ${(await res.text()).slice(0, 200)}`);
+  return res.status === 204 ? null : res.json();
+}
+
+const statePath = (name) => `/repos/${S.repo}/contents/state/${name}`;
+
+async function listState(prefix) {
+  const rows = await api(`/repos/${S.repo}/contents/state/${prefix.replace(/\/$/, '')}`);
+  return (rows || []).filter(r => r.type === 'file' && r.name.endsWith('.json'))
+                     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+async function readState(name) {
+  const f = await api(statePath(name));
+  return f ? { data: JSON.parse(b64d(f.content)), sha: f.sha } : null;
+}
+
+async function writeState(name, data, sha) {
+  return api(statePath(name), {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: `update ${name}`, content: b64e(JSON.stringify(data, null, 2)),
+      ...(sha ? { sha } : {}),
+    }),
+  });
+}
+
+async function deleteState(name, sha) {
+  return api(statePath(name), {
+    method: 'DELETE',
+    body: JSON.stringify({ message: `delete ${name}`, sha }),
+  });
+}
+
+async function dispatch(event) {
+  await api(`/repos/${S.repo}/dispatches`, {
+    method: 'POST', body: JSON.stringify({ event_type: event }),
+  });
+  note(`${event} を開始しました。1〜3 分で反映されます`);
+  setTimeout(load, 8000);
+}
+
+// --- 描画 --------------------------------------------------------------
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"]/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+async function load() {
+  if (!S.repo || !S.pat) { $('setup').classList.remove('hide'); return; }
+  $('setup').classList.add('hide');
+  $('main').classList.remove('hide');
+  $('bar').classList.remove('hide');
+  $('uploadLink').href = `https://github.com/${S.repo}/releases/tag/media`;
+
+  try {
+    const [readyRows, postedRows, release, runs, reportFile] = await Promise.all([
+      listState('queue/ready/'),
+      listState('queue/posted/'),
+      api(`/repos/${S.repo}/releases/tags/media`),
+      api(`/repos/${S.repo}/actions/runs?per_page=6`),
+      readState('research/latest_report.json'),
+    ]);
+
+    const ready = await Promise.all(readyRows.map(async r => ({
+      name: `queue/ready/${r.name}`, sha: r.sha,
+      item: JSON.parse(b64d((await api(statePath(`queue/ready/${r.name}`))).content)),
+    })));
+
+    renderCounts(ready, release);
+    renderPendingAssets(release);
+    renderQueue(ready);
+    renderReport(reportFile?.data);
+    await renderPosted(postedRows.slice(-5).reverse());
+    renderRuns(runs);
+  } catch (err) {
+    note(`読み込みに失敗しました: ${esc(err.message)}`, false);
+  }
+}
+
+function renderCounts(ready, release) {
+  const live = ready.filter(r => r.item.origin === 'live').length;
+  const ai = ready.length - live;
+  $('counts').innerHTML =
+    `<span class="pill">🎥 実写 ${live}</span>` +
+    `<span class="pill">🤖 AI ${ai}</span>` +
+    `<span class="pill">計 ${ready.length}</span>` +
+    (ready.length === 0 ? `<span class="pill" style="color:var(--danger)">明日の投稿がありません</span>` : '');
+}
+
+function renderPendingAssets(release) {
+  const pending = (release?.assets || []).filter(
+    a => !a.name.startsWith('videos__') && !a.name.startsWith('images__'));
+  $('pendingAssets').innerHTML = pending.length
+    ? `未取り込みの添付が ${pending.length} 件あります: `
+      + pending.map(a => esc(a.name)).join('、')
+    : '';
+}
+
+function renderQueue(ready) {
+  if (!ready.length) {
+    $('queue').innerHTML = '<div class="card muted">投稿待ちはありません。</div>';
+    return;
+  }
+  $('queue').innerHTML = ready.map((r, i) => {
+    const it = r.item, vi = it.video_info || {};
+    const badge = it.origin === 'live' ? '🎥 実写' : '🤖 AI';
+    return `<div class="card" data-name="${esc(r.name)}" data-sha="${esc(r.sha)}">
+      <div class="row"><strong class="grow">${i + 1}. ${badge}</strong>
+        <a class="muted" href="https://github.com/${S.repo}/releases/download/media/${
+          esc((it.video_path || '').replace(/\//g, '__'))}" target="_blank"
+          rel="noopener">動画を開く</a></div>
+      ${vi.width ? `<p class="muted" style="margin:4px 0">${vi.width}x${vi.height} / ${
+        vi.duration_sec}秒 / ${vi.size_mb}MB</p>` : ''}
+      <textarea class="cap">${esc(it.caption || '')}</textarea>
+      <input class="tags" style="margin-top:8px" placeholder="#タグ #タグ"
+        value="${esc((it.hashtags || []).join(' '))}">
+      <div class="row" style="margin-top:8px">
+        <button class="grow primary act-save">保存</button>
+        <button class="grow act-top">次に投稿</button>
+        <button class="grow danger act-del">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderReport(report) {
+  if (!report || !report.posts_analyzed) {
+    $('report').innerHTML =
+      '<p class="muted" style="margin:0">まだ実測データがありません。数本投稿すると成績が出ます。</p>';
+    return;
+  }
+  const line = (rows, label, fmt = (n) => esc(n)) => rows?.length
+    ? `<p class="muted">${label}: ` + rows.slice(0, 5).map(
+        ([n, s, c]) => `<b>${fmt(n)}</b> ${s.toFixed(2)}（${c}）`).join('、') + '</p>'
+    : '';
+  $('report').innerHTML =
+    `<p class="muted" style="margin-top:0">分析 ${report.posts_analyzed} 件 / ${
+      esc(report.season || '')}</p>`
+    + line(report.by_origin, '実写 / AI', n => n === 'live' ? '🎥実写' : '🤖AI')
+    + line(report.by_motion, '伸びている動き')
+    + line(report.by_hashtag, '効いているタグ');
+}
+
+async function renderPosted(rows) {
+  const items = await Promise.all(rows.map(async r =>
+    JSON.parse(b64d((await api(statePath(`queue/posted/${r.name}`))).content))));
+  $('posted').innerHTML = items.length ? items.map(it => `
+    <div class="card">
+      <div class="row"><span class="grow muted">${esc(it.published_at || it.id)}</span>
+      ${it.ig_permalink ? `<a class="btn" style="min-height:36px;padding:6px 12px"
+        href="${esc(it.ig_permalink)}" target="_blank" rel="noopener">開く</a>` : ''}</div>
+      ${it.insights ? `<p class="muted" style="margin-bottom:0">` + Object.entries(it.insights)
+        .map(([k, v]) => `${esc(k)} ${esc(v)}`).join(' / ') + '</p>' : ''}
+    </div>`).join('') : '<div class="card muted">まだ投稿がありません。</div>';
+}
+
+function renderRuns(runs) {
+  const rows = runs?.workflow_runs || [];
+  $('runs').innerHTML = rows.length ? rows.map(r => {
+    const mark = r.status !== 'completed' ? '⏳'
+      : r.conclusion === 'success' ? '✅' : '❌';
+    return `<div class="row" style="padding:4px 0">
+      <span class="grow">${mark} ${esc(r.name)}</span>
+      <a class="muted" href="${esc(r.html_url)}" target="_blank" rel="noopener">${
+        new Date(r.created_at).toLocaleString('ja-JP', {
+          month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</a>
+    </div>`;
+  }).join('') : '<p class="muted" style="margin:0">まだ実行履歴がありません。</p>';
+}
+
+// --- 操作 --------------------------------------------------------------
+
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+
+  if (btn.dataset.dispatch) {
+    btn.disabled = true;
+    try { await dispatch(btn.dataset.dispatch); }
+    catch (err) { note(`失敗しました: ${esc(err.message)}`, false); }
+    finally { btn.disabled = false; }
+    return;
+  }
+
+  const card = btn.closest('.card[data-name]');
+  if (!card) return;
+  const name = card.dataset.name, sha = card.dataset.sha;
+  btn.disabled = true;
+  try {
+    if (btn.classList.contains('act-save')) {
+      const cur = await readState(name);
+      cur.data.caption = card.querySelector('.cap').value;
+      cur.data.hashtags = card.querySelector('.tags').value.split(/\s+/)
+        .filter(Boolean).map(t => t.startsWith('#') ? t : '#' + t);
+      await writeState(name, cur.data, cur.sha);
+      note('保存しました');
+    } else if (btn.classList.contains('act-del')) {
+      if (!confirm('この動画をキューから外しますか？')) { btn.disabled = false; return; }
+      await deleteState(name, sha);
+      note('キューから削除しました');
+      await load();
+    } else if (btn.classList.contains('act-top')) {
+      const cur = await readState(name);
+      const newId = '00000000-000000-' + cur.data.id.slice(-6);
+      cur.data.reordered_from = cur.data.id;
+      cur.data.id = newId;
+      await writeState(`queue/ready/${newId}.json`, cur.data);
+      await deleteState(name, cur.sha);
+      note('次の投稿に設定しました');
+      await load();
+    }
+  } catch (err) {
+    note(`失敗しました: ${esc(err.message)}`, false);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('save').onclick = () => {
+  S.repo = $('repo').value.trim();
+  S.pat = $('pat').value.trim();
+  if (!S.repo.includes('/') || !S.pat) { note('入力を確認してください', false); return; }
+  localStorage.setItem('repo', S.repo);
+  localStorage.setItem('pat', S.pat);
+  load();
+};
+$('reload').onclick = load;
+$('repo').value = S.repo;
+
+load();
+</script>
+</body>
+</html>

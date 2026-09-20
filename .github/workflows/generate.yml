@@ -1,0 +1,14 @@
+# AI 動画の生成。LIVE_RATIO=1.0 の間は何もしない（手動実行のみ想定）。
+name: generate
+
+on:
+  repository_dispatch:
+    types: [generate]
+  workflow_dispatch:
+
+jobs:
+  generate:
+    uses: ./.github/workflows/_run.yml
+    with:
+      command: generate
+    secrets: inherit

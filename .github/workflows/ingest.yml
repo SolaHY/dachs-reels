@@ -1,0 +1,20 @@
+# 添付された動画・写真の取り込み。リリースを編集すると自動で走る。
+name: ingest
+
+on:
+  release:
+    types: [published, edited]
+  repository_dispatch:
+    types: [ingest]
+  workflow_dispatch:
+
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    uses: ./.github/workflows/_run.yml
+    with:
+      command: ingest
+    secrets: inherit

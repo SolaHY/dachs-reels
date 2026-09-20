@@ -1,0 +1,21 @@
+# 毎朝の投稿。cron-job.org からの repository_dispatch が本番のトリガで、
+# GitHub の schedule は保険（2026 年時点で数時間遅れることがあるため）。
+name: publish
+
+on:
+  repository_dispatch:
+    types: [publish]
+  workflow_dispatch:
+  schedule:
+    - cron: '20 23 * * *'   # 08:20 JST。外部トリガが落ちた日の保険
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    uses: ./.github/workflows/_run.yml
+    with:
+      command: publish
+    secrets: inherit
