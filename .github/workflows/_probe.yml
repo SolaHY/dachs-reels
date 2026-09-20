@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   probe:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "standalone ok"
+    uses: ./.github/workflows/_run.yml
+    with:
+      command: status
+    secrets: inherit
