@@ -1,0 +1,143 @@
+{
+  "updated_at": "2026-09-20T02:38:32+00:00",
+  "prompts": [
+    {
+      "id": "p-20260920-091bcc",
+      "prompt": "two miniature dachshunds, slow yawn then settling down, eyes half closing, slow pan following the dogs, golden hour glow, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "朝いちばんのレオとおはな🐾\n今日もいい一日を",
+      "hashtags": [
+        "#愛犬",
+        "#ダックスフンド",
+        "#多頭飼い",
+        "#犬のいる暮らし",
+        "#犬好きさんと繋がりたい",
+        "#ミニチュアダックスフンド",
+        "#dachshund",
+        "#dogsofinstagram"
+      ],
+      "motion": "yawn",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    },
+    {
+      "id": "p-20260920-1c0c62",
+      "prompt": "two miniature dachshunds, a short burst of playful running, fur fluttering, slight low-angle push in, bright overcast daylight, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "おはよう🌿\n今日も元気なレオとおはな",
+      "hashtags": [
+        "#miniaturedachshund",
+        "#いぬすたぐらむ",
+        "#愛犬",
+        "#犬のいる暮らし",
+        "#ミニチュアダックスフンド",
+        "#dogsofinstagram",
+        "#dachshund",
+        "#多頭飼い"
+      ],
+      "motion": "zoomies",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    },
+    {
+      "id": "p-20260920-465c84",
+      "prompt": "two miniature dachshunds, the two dogs leaning into each other, slow breathing, slow dolly in, golden hour glow, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "おはようございます☀️\n今日のレオとおはなです",
+      "hashtags": [
+        "#犬好きさんと繋がりたい",
+        "#いぬすたぐらむ",
+        "#ミニチュアダックスフンド",
+        "#dachshund",
+        "#ダックスフンド",
+        "#多頭飼い",
+        "#dogsofinstagram",
+        "#愛犬"
+      ],
+      "motion": "snuggle",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    },
+    {
+      "id": "p-20260920-43e559",
+      "prompt": "two miniature dachshunds, curious head tilt, ears perking up, blinking, slow dolly in, cozy indoor lamp light, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "朝いちばんのレオとおはな🐾\n今日もいい一日を",
+      "hashtags": [
+        "#いぬすたぐらむ",
+        "#dachshund",
+        "#愛犬",
+        "#miniaturedachshund",
+        "#dogsofinstagram",
+        "#犬のいる暮らし",
+        "#ミニチュアダックスフンド",
+        "#犬好きさんと繋がりたい"
+      ],
+      "motion": "head_tilt",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    },
+    {
+      "id": "p-20260920-a1160f",
+      "prompt": "two miniature dachshunds, a short burst of playful running, fur fluttering, slight low-angle push in, warm morning light, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "おはよう🌿\n今日も元気なレオとおはな",
+      "hashtags": [
+        "#愛犬",
+        "#ダックスフンド",
+        "#いぬすたぐらむ",
+        "#dachshund",
+        "#dogsofinstagram",
+        "#犬好きさんと繋がりたい",
+        "#犬のいる暮らし",
+        "#多頭飼い"
+      ],
+      "motion": "zoomies",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    },
+    {
+      "id": "p-20260920-48637d",
+      "prompt": "two miniature dachshunds, sniffing the ground, nose twitching, whiskers moving, static shot with shallow depth of field, bright overcast daylight, natural fur texture, shallow depth of field, photorealistic, no morphing, no extra limbs, stable anatomy",
+      "caption": "レオとおはな、今日もよろしくね🐾",
+      "hashtags": [
+        "#miniaturedachshund",
+        "#犬好きさんと繋がりたい",
+        "#いぬすたぐらむ",
+        "#愛犬",
+        "#ダックスフンド",
+        "#犬のいる暮らし",
+        "#dogsofinstagram",
+        "#多頭飼い"
+      ],
+      "motion": "sniff",
+      "theme": "daily",
+      "source": "template",
+      "created_at": "2026-09-20T02:38:32+00:00",
+      "uses": 0,
+      "trials": 0,
+      "score": null,
+      "stats": {}
+    }
+  ]
+}
