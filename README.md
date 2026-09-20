@@ -210,7 +210,7 @@ iPhone の縦撮り（本体 1920x1080 + 90 度の回転行列）も表示サイ
 | GitHub Releases | 動画 1 本 数十 MB | 1 ファイル 2GB | 無料 |
 | GitHub Pages | 管理画面 | 1GB / 月 100GB 転送 | 無料 |
 | cron-job.org | 1 日 1 回 | 無料枠 | 無料 |
-| Gemini API | 週 1 回・数千トークン | 2.5 Flash 無料枠 | 無料 |
+| Gemini API | 週 1 回・数千トークン | 3.6 Flash 無料枠 | 無料 |
 | PixVerse | `LIVE_RATIO=1.0` なら 0 | — | 無料 |
 
 **クレジットカードの登録は一切不要です。**

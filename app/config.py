@@ -56,7 +56,7 @@ DEFAULT_CAPTION = os.environ.get("DEFAULT_CAPTION", "")
 # --- プロンプト生成 / 市場調査 ------------------------------------------
 # gemini | template（gemini 失敗時は自動で template にフォールバック）
 PROMPT_PROVIDER = os.environ.get("PROMPT_PROVIDER", "gemini")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
 RESEARCH_NEW_PROMPTS = _env_int("RESEARCH_NEW_PROMPTS", 6)
 POOL_MIN_UNTESTED = _env_int("POOL_MIN_UNTESTED", 4)
 PET_NAMES = os.environ.get("PET_NAMES", "うちの子")

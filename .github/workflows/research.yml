@@ -36,4 +36,5 @@ jobs:
           LIVE_RATIO: ${{ vars.LIVE_RATIO || '1.0' }}
           QUEUE_TARGET: ${{ vars.QUEUE_TARGET || '7' }}
           PROMPT_PROVIDER: ${{ vars.PROMPT_PROVIDER || 'gemini' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.6-flash' }}
         run: python -m app.main research
