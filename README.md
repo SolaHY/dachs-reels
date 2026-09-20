@@ -6,6 +6,15 @@
 
 **クレジットカード不要・完全無料。** GitHub だけで動きます。
 
+| | |
+|---|---|
+| 管理画面（スマホ） | https://solahy.github.io/dachs-reels/ |
+| 運用マニュアル（PDF） | https://solahy.github.io/dachs-reels/manual.pdf |
+| 動画の投入口 | https://github.com/SolaHY/dachs-reels/releases/tag/media |
+| 実行履歴 | https://github.com/SolaHY/dachs-reels/actions |
+
+> スマホでの運用手順はマニュアル（PDF）にスクリーンショット付きでまとまっています。
+
 ---
 
 ## 1. 構成
