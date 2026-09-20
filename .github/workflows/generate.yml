@@ -1,14 +1,38 @@
-# AI 動画の生成。LIVE_RATIO=1.0 の間は何もしない（手動実行のみ想定）。
 name: generate
 
 on:
+  # LIVE_RATIO=1.0 の間は何もしない（手動実行のみ想定）
   repository_dispatch:
     types: [generate]
   workflow_dispatch:
 
+concurrency:
+  group: generate
+  cancel-in-progress: false
+
 jobs:
   generate:
-    uses: ./.github/workflows/_run.yml
-    with:
-      command: generate
-    secrets: inherit
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write        # state/ の更新とリリース添付の操作に必要
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: run generate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ADMIN_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PIXVERSE_API_KEY: ${{ secrets.PIXVERSE_API_KEY }}
+          IG_USER_ID: ${{ vars.IG_USER_ID }}
+          PET_NAMES: ${{ vars.PET_NAMES }}
+          LIVE_RATIO: ${{ vars.LIVE_RATIO || '1.0' }}
+          QUEUE_TARGET: ${{ vars.QUEUE_TARGET || '7' }}
+          PROMPT_PROVIDER: ${{ vars.PROMPT_PROVIDER || 'gemini' }}
+        run: python -m app.main generate
