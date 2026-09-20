@@ -30,6 +30,7 @@ def _refill(pool: dict, performance: str) -> int:
                 duration=config.PIXVERSE_DURATION,
                 performance=performance,
                 existing=existing,
+                pet_names=config.PET_NAMES,
             )
             log.info("Gemini で %d 件の企画を生成しました", len(entries))
         except Exception as exc:

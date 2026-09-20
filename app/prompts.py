@@ -1,6 +1,6 @@
 """プロンプトプール: 生成候補の保管・選択・スコアリング。
 
-プールは GCS の research/prompt_pool.json に置く。各エントリは
+プールは research/prompt_pool.json に置く。各エントリは
 「どんな動きの動画を作るか（prompt）」と「どう投稿するか（caption/hashtags）」、
 そして実測成績（stats/score）を持つ。
 
@@ -189,11 +189,14 @@ BASE_HASHTAGS = [
     "#いぬすたぐらむ", "#犬好きさんと繋がりたい", "#dogsofinstagram",
 ]
 
+# 呼び名は実名（例「レオとおはな」）が入るので、「〜たち」を付け足さない。
+# 「レオとおはなたち」のような不自然な日本語になるため。
 CAPTION_PATTERNS = [
-    "おはようございます☀️\n今日の{name}たちです",
-    "朝いちばんの{name}たち🐾\n今日もいい一日を",
-    "今朝の一枚から🎬\n{name}たちの朝",
-    "おはよう🌿\n今日も元気な{name}たち",
+    "おはようございます☀️\n今日の{name}です",
+    "朝いちばんの{name}🐾\n今日もいい一日を",
+    "今朝の一枚から🎬\n{name}の朝",
+    "おはよう🌿\n今日も元気な{name}",
+    "{name}、今日もよろしくね🐾",
 ]
 
 
@@ -234,6 +237,8 @@ AI 動画生成（PixVerse image-to-video, {duration}秒, 縦9:16）で作る
 - theme: 企画のテーマを表す英小文字スネークケースの短いキー（例 autumn_walk）
 
 ## 今の文脈
+- 2匹の呼び名: {pet_names}（キャプションではこの名前で呼ぶこと。
+  実名なので「〜たち」を付け足さない）
 - 季節・行事: {season}
 - 現在のフォロワー規模: 小規模個人アカウント（保存とシェアを伸ばしたい）
 
@@ -270,7 +275,8 @@ RESPONSE_SCHEMA = {
 
 
 def gemini_entries(count: int, *, api_key: str, model: str, duration: int,
-                   performance: str, existing: list[str]) -> list[dict[str, Any]]:
+                   performance: str, existing: list[str],
+                   pet_names: str = "うちの子") -> list[dict[str, Any]]:
     """Gemini で候補を生成する。失敗時は例外を投げる（呼び出し側でフォールバック）。"""
     from google import genai
     from google.genai import types
@@ -278,6 +284,7 @@ def gemini_entries(count: int, *, api_key: str, model: str, duration: int,
     instruction = GEMINI_INSTRUCTION.format(
         count=count,
         duration=duration,
+        pet_names=pet_names,
         season=season_context(),
         performance=performance or "（まだ実測データがありません。定番から始めてください）",
         existing="\n".join(f"- {p}" for p in existing[:20]) or "（なし）",
