@@ -1,0 +1,27 @@
+{
+  "id": "20260920-011847-19acd3",
+  "origin": "live",
+  "source": "IMG_TEST.mp4",
+  "video_path": "videos/20260920-011847-19acd3.mp4",
+  "caption": "おはようございます☀️\n今日のうちの子たちです",
+  "hashtags": [
+    "#dachshund",
+    "#愛犬",
+    "#miniaturedachshund",
+    "#ダックスフンド",
+    "#dogsofinstagram",
+    "#多頭飼い",
+    "#犬のいる暮らし",
+    "#いぬすたぐらむ"
+  ],
+  "prompt_id": "p-20260920-8682be",
+  "theme": "daily",
+  "motion": "live",
+  "video_info": {
+    "duration_sec": 6.0,
+    "width": 1080,
+    "height": 1920,
+    "size_mb": 0.1
+  },
+  "created_at": "2026-09-20T01:18:48+00:00"
+}
