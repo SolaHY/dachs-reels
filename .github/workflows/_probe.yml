@@ -1,0 +1,10 @@
+name: probe
+on:
+  repository_dispatch:
+    types: [probe]
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "standalone ok"
