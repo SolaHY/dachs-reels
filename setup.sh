@@ -55,6 +55,19 @@ else
     --notes "動画と写真の置き場。ここにファイルを添付すると自動で取り込まれます。" >/dev/null
 fi
 
+# --- 3b. media タグを最新コミットに追従させる ---------------------------
+# release イベントで走るワークフローは「タグが指すコミット」の版が使われる。
+# タグを置き去りにすると、添付時の自動取り込みが古いワークフローで動いてしまう。
+echo "==> media タグを main の先頭に合わせる"
+HEAD_SHA="$(git rev-parse HEAD)"
+TAG_SHA="$(gh api "repos/${REPO}/git/ref/tags/${MEDIA_TAG}" --jq .object.sha 2>/dev/null || echo "")"
+if [ "${TAG_SHA}" != "${HEAD_SHA}" ]; then
+  gh api -X PATCH "repos/${REPO}/git/refs/tags/${MEDIA_TAG}"     -f sha="${HEAD_SHA}" -F force=true >/dev/null
+  echo "    ${TAG_SHA:0:7} → ${HEAD_SHA:0:7}"
+else
+  echo "    既に一致しています"
+fi
+
 # --- 4. 設定値（公開されても困らないもの）------------------------------
 echo "==> Variables"
 for kv in "PET_NAMES=${PET_NAMES}" "LIVE_RATIO=${LIVE_RATIO}" \
