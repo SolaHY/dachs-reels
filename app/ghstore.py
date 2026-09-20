@@ -45,9 +45,13 @@ class StoreError(RuntimeError):
 # --- 接続 ---------------------------------------------------------------
 
 def repo() -> str:
-    value = os.environ.get("GITHUB_REPO", "")
+    # GITHUB_REPOSITORY は Actions が自動で入れる。ローカルでは GITHUB_REPO を使う。
+    value = (os.environ.get("GITHUB_REPOSITORY")
+             or os.environ.get("GITHUB_REPO", ""))
     if "/" not in value:
-        raise StoreError("環境変数 GITHUB_REPO を owner/repo の形式で設定してください")
+        raise StoreError(
+            "リポジトリを特定できません。GITHUB_REPO を owner/repo の形式で"
+            "設定してください（GitHub Actions では自動で入ります）")
     return value
 
 
