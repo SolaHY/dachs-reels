@@ -14,6 +14,7 @@
 | 実行履歴 | https://github.com/SolaHY/dachs-reels/actions |
 
 > スマホでの運用手順はマニュアル（PDF）にスクリーンショット付きでまとまっています。
+> **投稿を始めるまでの残作業は [TASK.md](TASK.md) にあります。**
 
 ---
 
