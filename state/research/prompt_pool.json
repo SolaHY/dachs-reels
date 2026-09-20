@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-20T01:26:34+00:00",
+  "updated_at": "2026-09-20T01:57:46+00:00",
   "prompts": [
     {
       "id": "p-20260920-8682be",
@@ -42,7 +42,7 @@
       "theme": "daily",
       "source": "template",
       "created_at": "2026-09-20T01:18:42+00:00",
-      "uses": 0,
+      "uses": 1,
       "trials": 0,
       "score": null,
       "stats": {}
